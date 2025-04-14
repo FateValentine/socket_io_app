@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../lib/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="../lib/css/vuetify2_dist_vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background: transparent;
+        }
+        #app, v-app {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        ul { list-style-type: none; margin: 0; padding: 0; }
+        li { padding: 8px; background: #f4f4f4; margin-bottom: 5px; }
+
+
+
+        /*  */
+
+
+        .chat-messages {
+            height: 500px;
+            overflow-y: auto;
+            /* background-color: beige; */
+            /* background-color: #e0e0e0;  */
+            background-color: #E1F5F2;
+        }
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 70%;
+            margin: 5px 0;
+            background: var(--white);
+        }
+        .message.sent {
+            /* background-color: #dcf8c6; */
+            /* background: lighten(var(--dark), 45%); */
+            background-color: #baa6a6; 
+            margin-left: auto; 
+            text-align: right; 
+        }
+        .message.received {
+            background-color: #f1f0f0; 
+            text-align: left; 
+        }
+        .emoji {
+            font-size: 15px; 
+            margin-bottom: 25px;
+        }
+        .emoji-received {
+            font-size: 15px;
+            margin-bottom: 25px;
+        }
+        .emoji-sent {
+            font-size: 15px; 
+            position: absolute; 
+            right: 10px; 
+            bottom: -30px; 
+        }
+        .message-container {
+            position: relative;
+            /* padding: 10px; */
+            padding: 2px;
+            border-radius: 10px;
+            background-color: #e0e0e0; 
+            /* margin-bottom: 25px; */
+            margin-bottom: 2px;
+        }
+        .sent-message {
+            display: flex;
+            justify-content: flex-end; 
+            width: 100%; 
+            /* background-color: #bad8d6; */
+        }
+        .c1 {
+            /* background-color: #A1E2D9; */
+            background-color: #ADE7DF;
+            height: 120px;
+            width:200px;
+            border-radius:  10px 0 0 0;
+            box-shadow: 5px 5px 15px rgba(119, 119, 119, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .c2 {
+            /* background-color: #A1E2D9; */
+            background-color: #e3efed;
+            height: 250px;
+            width: 200px;
+            border-radius: 0 0 0 10px;
+            box-shadow: 5px 5px 5px rgba(119, 119, 119, 0.5);
+        }
+        .c3 {
+            /* background-color: blue;
+            height: 60px;
+            width: 400px;
+            border-radius:  10px 10px 0 0; */
+
+            background-color: white;
+            height: 60px;
+            width: 400px;
+            border-radius:  10px 10px 0 0;
+            box-shadow: 5px 5px 15px rgba(119, 119, 119, 0.5);
+            display: flex;
+            justify-content: start;
+            align-items: center;
+        }
+        .c4 {
+            background-color: #e0e0e0; 
+            /* background-color: blueviolet; */
+            height: 300px;
+            width: 400px;
+        }
+        .c5 {
+            /* background-color: orange;
+            height: 50px;
+            width: 400px;
+            border-radius: 0 0 10px 10px; */
+
+            background-color: white;
+            height: 60px;
+            width: 400px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 5px 5px 15px rgba(119, 119, 119, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        .title {
+            /* text-transform: uppercase; */
+            /* font-size: 0.7em; */
+            font-size: 1px;
+            margin-left: 14px;
+            letter-spacing: 1px;
+            color: var(--dark);
+        }
+        .preview {
+            color: var(--primary);
+            margin-left: 14px;
+            font-size: 0.5em;
+            width: 1px;
+            overflow-y: auto;
+        }
+        .people {
+            position: absolute;
+            list-style-type: none;
+            width: 30.2%;
+            left: -10px;
+            top: 24.7%;
+            line-height: 0.7em;
+        }
+        .custom-text-field {
+            flex-grow: 1;
+            max-height: 10px; 
+            /* width: 300px;  */
+        }
+        .bottom-bar {
+            position: absolute;
+            /* width: 100%; */
+            height: 55px;
+            bottom: 0;
+            background: var(--white);
+            border-radius: 0 0 10px 10px;
+        }
+        .middle {
+            position: absolute;
+            background: var(--white);
+            width: 100%;
+            opacity: 0.85;
+            top: 60px;
+            height: 80%;
+        }
+        .top-bar {
+            width: 100%;
+            height: 60px;
+            background: var(--white);
+            border-radius: 10px 10px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <v-app>
+            <v-main>
+                <v-container fluid>
+                    <v-card v-if="!isUserLoggedIn" class="pa-1" style="overflow: hidden; height: 400px;" color="grey darken-4" dark tile>
+                        <div style="font-size: 13px; margin-left: 1px;">
+                            <h2 style="width: 385px; background-color: gray;" class="text-center">
+                                <b>{{ isLogin ? 'LOGIN' : 'REGISTER' }}</b>
+                            </h2>
+                        </div>
+                        <div style="overflow-y: auto; height: 355px; background-color: #9791A0; margin-top: 5px;">
+                            <v-card-text>
+                                <v-form ref="form" lazy-validation>
+                                    <v-text-field v-model="username" label="Username" required clearable></v-text-field>
+                                    <v-text-field v-model="password" label="Password" type="password" required clearable @keyup.enter="isLogin ? loginUser() : registerUser()"></v-text-field>
+                                    <v-text-field v-if="!isLogin" v-model="age" label="Age" type="number" required></v-text-field>
+                                    <v-text-field v-if="!isLogin" v-model="birthday" label="Birthday (YYYY-MM-DD)" type="date" required></v-text-field>
+                                    <v-select v-if="!isLogin" v-model="status" :items="['Single', 'Married', 'Divorced', 'Widowed']" label="Status" required></v-select>
+                                    <v-select v-if="!isLogin" v-model="gender" :items="['Male', 'Female', 'Other']" label="Gender" required></v-select>
+                                    <v-btn color="primary" block @click="isLogin ? loginUser() : registerUser()">
+                                        {{ isLogin ? 'Login' : 'Register' }}
+                                    </v-btn>
+                                    <v-btn color="secondary" block @click="toggleForm">
+                                        {{ isLogin ? 'Register' : 'Login' }}
+                                    </v-btn>
+                                </v-form>
+                            </v-card-text>
+                        </div>
+                    </v-card>
+                    <v-card v-else style="background-color: transparent;" elevation="0">
+                        <div style="display: flex;" >
+                            <div style="display: flex; flex-direction: column;margin-top: 40px;">
+                                <div class="c1" style="align-items: center;">
+                                   <!-- test1 -->
+                                   <v-avatar size="40" class="mr-2" style="background-color: #9d5cc3; color: white;"> 
+                                        <span> {{ this.currentUserData }}</span> 
+                                    </v-avatar>
+                                </div>
+                                <div class="c2" style="background-color: #A1E2D9; height: 250px; overflow-y: auto; width: 200px;">
+                                    <!-- test2 -->
+                                    <v-list style="background-color: #ADE7DF;">
+                                        <v-list-item  v-for="(friend, index) in friendList" :key="friend + index" @click="selectFriend(friend)">
+                                                <v-badge
+                                                    color="pink"
+                                                    dot
+                                                    offset-x="15" 
+                                                    offset-y="11"
+                                                    >
+                                                    <v-avatar size="40" class="mr-2" style="background-color: #9d5cc3; color: white;"> 
+                                                        <span>{{ friend.charAt(0) }}</span> 
+                                                    </v-avatar>
+                                                </v-badge>
+                                                    <h5 >{{ friend }}</h5>
+                                        </v-list-item>
+                                    </v-list>   
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; margin-left: 0px;margin-top: 15px;">
+                                <div class="c3">
+                                    <!-- test3 -->
+                                    <span style="margin-left: 10px;">{{ currentFriend ? currentFriend : '' }}</span>
+                                </div>
+                                <div class="c4">
+                                    <!-- test4 -->
+                                    <div style="height: 300px; overflow-y: auto;">
+                                        <div id="messages" v-for="(msg, index) in messages" :key="index" :class="{'sent-message': currentUserData === msg.from}" style="display: flex; margin-bottom: 10px; justify-content: space-between;">
+                                            <!-- {{msg}} -->
+                                            <div v-if="currentUserData !== msg.from" style="width: 15%;">
+                                                <v-avatar size="40" class="mr-2" style="background-color: #9d5cc3; color: white;margin-top: 5px;">
+                                                    <span style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                                                        {{ msg.from }}
+                                                    </span>
+                                                </v-avatar>
+                                            </div>
+                                            <div style="width: 85%; margin-left: 10px;">
+                                                <div :class="{'message sent': currentUserData === msg.from, 'message received': currentUserData !== msg.from}">
+                                                    <span v-if="currentUserData === msg.from" :class="{'message sent': currentUserData === msg.from}">
+                                                        {{ msg.message }} :
+                                                    </span>
+                                                    <span v-else>
+                                                        <!-- {{ msg.from }} : <br>{{ msg.message }} -->
+                                                        {{ msg.message }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div v-if="currentUserData === msg.from" style="width: 15%; margin-left: 10px;">
+                                                <v-avatar size="40" class="mr-2" style="background-color: #9d5cc3; color: white;margin-top: 5px;">
+                                                    <span style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                                                        {{ msg.from }}
+                                                    </span>
+                                                </v-avatar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="c5" >
+                                    <!-- test5 -->
+                                    <v-form @submit.prevent="sendMessage">
+                                        <v-text-field 
+                                            v-model="input" 
+                                            label="Type your message" 
+                                            autocomplete="off"
+                                            outlined
+                                            dense
+                                            style="margin-top: 23px;width: 360px;"
+                                            >
+                                        </v-text-field>
+                                    </v-form>
+                                </div>
+                            </div>
+                        </div>
+                    </v-card>
+                </v-container>
+            </v-main>
+        </v-app>
+    </div>
+
+    <script src="../lib/js/vue2_dist_vue.js"></script>
+    <script src="../lib/js/vuetify2_dist_vuetify.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            data: () => ({
+                input: '',
+                messages: [],
+                friends: ['Alice', 'Bob', 'Charlie'],
+                currentFriend: null,
+                messageInput: '',
+                emojis: ['😀', '😁', '😂', '😍', '😎', '😢', '😡', '👍', '👎', '🎉',''],
+                messageCounter: 0,
+                username: '',
+                password: '',
+                age: '',
+                birthday: '',
+                status: '',
+                gender: '',
+                isLogin: true,
+                dialog: false,
+                currentUser: 'GUEST',
+                friendList : [],
+                isTyping: false,
+                refreshInterval: null,
+                alertShown: false,
+                currentUserData : [],
+            }),
+            mounted() {
+                const socket = io();
+
+                fetch('/fetch-messages')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data,'data')
+                        const test = data.filter(r => {
+                            return r.from && r.message && r.to
+                        })
+
+                        this.messages = test
+                   
+                    })
+                    .catch(error => {
+                        console.error('Error fetching messages:', error);
+                    });
+
+                const currentUser = localStorage.getItem('currentUser');
+                this.currentUserData = currentUser
+                if (this.currentUserData) {
+                    socket.emit('set username', this.currentUserData);
+                }
+                socket.on('update messages', (updatedMessages) => {
+                    const test = updatedMessages.filter(r => {
+                            return r.from && r.message && r.to
+                        })
+
+                        this.messages = test
+                });
+
+                socket.on('chat message', (msg) => {
+                    this.messages.push(msg);
+                    this.$nextTick(() => {
+                        window.scrollTo(0, document.body.scrollHeight);
+                    });
+                });
+
+                this.fetchUserFriends()
+            },
+            computed : {
+                isUserLoggedIn() {
+                    return !!localStorage.getItem('currentUser');
+                }
+            },
+            methods: {
+
+                sendMessage() {
+                    if (this.input) {
+                        const socket = io(); 
+                        const currentUser = localStorage.getItem('currentUser'); 
+                        socket.emit('chat message', { msg: this.input, user: currentUser , to: this.currentFriend});
+                        this.input = '';
+
+                        console.log(this.currentFriend,'friend??')
+                    }
+                },
+
+                toggleForm() {
+                    this.isLogin = !this.isLogin;
+                    this.username = '';
+                    this.password = '';
+                },
+                loginUser() {
+                    this.username = this.username.trim();
+                    const password = this.password.trim();
+
+                    if (!this.username || !password) {
+                        alert('Username and password cannot be empty');
+                        return;
+                    }
+
+                    fetch(`/fetch-users?username=${encodeURIComponent(this.username)}&password=${encodeURIComponent(password)}`)
+                        .then(response => {
+                            if (!response.ok) throw new Error('Network response was not ok');
+                            return response.json();
+                        })
+                        .then(users => {
+                            if (users.length > 0) {
+                                localStorage.setItem('currentUser', this.username);
+                                location.reload();
+                            } else {
+                                alert('Invalid username or password');
+                            }
+                        })
+                        .catch(error => {
+                            alert('An error occurred while logging in');
+                            console.error('Error fetching user info:', error);
+                        });
+                },
+
+                // fetchUserFriends() {
+                //     this.friendList = this.friends; 
+                // },
+
+                fetchUserFriends() {
+                    const currentUser = localStorage.getItem('currentUser');
+                        if (!currentUser) {
+                            // console.log('No user is logged in. Skipping fetch for messages.');
+                            return; 
+                        }
+
+
+                        return fetch('/fetch-users-friends')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                // this.friendList = data; 
+                                console.log(data ,' haha')
+
+                                this.friendList = data.filter(friend => friend !== this.currentUser);
+                                    
+                            })
+                            .catch(error => {
+                                console.error('Error fetching user info:', error);
+                                this.users = []; 
+                            });
+                },
+
+                selectFriend(friend) {
+                    this.currentFriend = friend; 
+                    // this.loadMessages(friend); 
+                    // if (this.refreshInterval) {
+                    //     clearInterval(this.refreshInterval);
+                    // }
+                    // this.refreshInterval = setInterval(() => this.loadMessages(friend), 2000);
+               
+                },
+            }
+        });
+    </script>
+</body>
+</html>

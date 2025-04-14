@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "username": "sample",
+    "password": "data",
+    "age": "123",
+    "birthday": "2024-11-20",
+    "status": "Married",
+    "gender": "Male",
+    "createdAt": "2024-11-19T07:45:06.078Z",
+    "updatedAt": "2024-11-19T07:45:06.078Z",
+    "deletedAt": null
+  },
+  {
+    "id": 2,
+    "username": "Dota",
+    "password": "data",
+    "age": "3234",
+    "birthday": "2024-11-20",
+    "status": "Married",
+    "gender": "Male",
+    "createdAt": "Tue Nov 19 2024",
+    "updatedAt": "Tue Nov 19 2024",
+    "deletedAt": null
+  },
+  {
+    "id": 3,
+    "username": "BINI",
+    "password": "sample",
+    "age": "27",
+    "birthday": "2024-11-18",
+    "status": "Married",
+    "gender": "Female",
+    "createdAt": "Tue Nov 19 2024",
+    "updatedAt": "Tue Nov 19 2024",
+    "deletedAt": null
+  },
+  {
+    "id": 4,
+    "username": "binilat",
+    "password": "123",
+    "age": "-2",
+    "birthday": "2025-02-04",
+    "status": "Single",
+    "gender": "Other",
+    "createdAt": "Tue Nov 19 2024",
+    "updatedAt": "Tue Nov 19 2024",
+    "deletedAt": null
+  },
+  {
+    "id": 5,
+    "username": "rem",
+    "password": "rem",
+    "age": "28",
+    "birthday": "2024-11-20",
+    "status": "Single",
+    "gender": "Male",
+    "createdAt": "Wed Nov 20 2024",
+    "updatedAt": "Wed Nov 20 2024",
+    "deletedAt": null
+  }
+]
