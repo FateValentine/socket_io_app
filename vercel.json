@@ -1,1 +1,11 @@
-{ "version": 2, "rewrites": [{ "source": "/(.*)", "destination": "/api" }] }
+{
+    "version": 2,
+    "build": {
+      "env": {
+        "PORT": "3000"
+      }
+    },
+    "routes": [
+      { "src": "/(.*)", "dest": "/index.js" }
+    ]
+  }
